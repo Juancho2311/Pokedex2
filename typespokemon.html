@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <title>Document</title>
+</head>
+
+<body onload="mostrarPokemon()" class="backgroundType"
+    style="background-image: url(/img/Pokémon-Logo-PNG.png); background-size: contain;">
+    <div class="container-fluid">
+        <div class="row titulo d-flex align-content-center">
+            <h1 class="text-center text-uppercase bg-black fst-italic" id="categorias" style="color: yellow;"></h1>
+        </div>
+        <div class="row justify-content-center" id="listPokemon">
+        </div>
+    </div>
+</body>
+<script>
+    const pokemon = []
+
+    function traerDatos() {
+        return new Promise(response => {
+            let url = localStorage.url;
+            fetch(url)
+                .then((response) => response.json())
+                .then((data) => {
+                    document.getElementById("categorias").innerHTML = `Pokemon tipo ${data.name}`;
+                    data.pokemon.forEach(element => {
+                        pokemon.push(element);
+                        detallePokemon(element)
+                        categorias = data.name
+                    });
+                    response("Holis")
+                })
+
+        })
+    }
+
+    function mostrarPokemon() {
+        let listaPokemon = ""
+        traerDatos()
+            .then(response => {
+                pokemon.forEach(element => {
+                    listaPokemon += `<div class="card mb-3 mx-3 bg-dark text-white text-uppercase " style="max-width: 600px;">
+  <div class="row g-0">
+    <div class="col-md-4">
+     <a onclick="urlPoke('${element.pokemon.url}')" href="pokemon.html"><img id="img${element.pokemon.name}"src="..." class="img-fluid rounded-start" alt="..."></a>
+    </div>
+    <div class="col-md-8">
+      <div class="card-body">
+        <h5 class="card-title text-center bg-light text-black fst-italic">${element.pokemon.name}</h5>
+        <p id="altura${element.pokemon.name}" class="card-text text-start"></p>
+        <p id="peso${element.pokemon.name}"class="card-text text-start"></p>
+        <p id="numero${element.pokemon.name}"class="card-text text-start"></p>
+        <p id="tipo${element.pokemon.name}"class="card-text text-start "></p>
+    
+      </div>
+    </div>
+  </div>
+</div>`
+                })
+                document.getElementById("listPokemon").innerHTML = listaPokemon
+            })
+
+    }
+    function urlPoke(urlPokemon) {
+        localStorage.urlPoke= urlPokemon
+    }
+
+        function detallePokemon(pokemon, categoria) {
+            fetch(pokemon.pokemon.url)
+                .then(response => response.json())
+                .then(data => {
+                    let imagen = data.sprites.other["official-artwork"].front_default
+                    let altura = data.height
+                    let peso = data.weight
+                    let numero = data.order
+                    // console.log(pokemon.pokemon.name)
+                    // console.log(altura)
+                    document.getElementById(`img${pokemon.pokemon.name}`).src = imagen
+                    document.getElementById(`altura${pokemon.pokemon.name}`).innerText = `Altura: ${(altura * 0.1).toFixed(1)} ` + "metros"
+                    document.getElementById(`peso${pokemon.pokemon.name}`).innerText = `Peso: ${(peso * 0.1).toFixed(1)}` + "kg"
+                    document.getElementById(`numero${pokemon.pokemon.name}`).innerHTML = `Orden : ${numero}`
+                    
+
+                    let tipos = "tipos : "
+                    data.types.forEach(element =>{
+                        if (element.type.name == categoria) {
+                            tipos += `${element.type.name}`
+                        }else{
+                            tipos += `<a onclick="localUrlPoke('${element.type.url}')" href="typesPokemon.html">${element.type.name} </a>`             
+                               }
+
+                    })
+                    document.getElementById(`tipo${pokemon.pokemon.name}`).innerHTML = tipos
+                   
+                })
+
+        }
+
+        function localUrlPoke(urlType) {
+            localStorage.setItem("url", urlType);
+        }
+
+        function infoPokemon(urlPokemon) {
+            fetch(urlPokemon.pokemon.url)
+                .then((response) => response.json())
+                .then(data => {
+                    console.log(data)
+                    document.getElementById(`img${urlPokemon.pokemon.name}`).src = data.sprites.other["official-artwork"].front_default
+                })
+        }
+
+
+
+</script>
+
+
+
+
+
+<!-- ES LO QUE HICE EN CLASE 02/03 -->
+<!-- <body onload="traerdatos()">
+    <h1 id="categorias" class="col-12 d-flex justify-content-center align-content-center">Categorias Pokemon</h1>
+    <article>
+
+    </article>
+
+</body> -->
+
+
+
+
+<!-- <script>
+    // esto es para traer la categoria
+    const tipo = []
+    function traerdatos() {
+        let url = localStorage.url;
+        fetch(url)
+            .then((response) => response.json())
+            .then((data) => {
+                document.getElementById("categorias").innerHTML = `pokemon tipo ${data.name}`;
+                console.log(data);
+                data.pokemon.forEach(element => {
+                    tipo.push(element);
+                });
+                console.log(data);
+            })
+
+    }
+</script>
+
+<script>
+    // // esto es para traer la categoria
+    // const = []
+    // function traerdatos() {
+    //     let url = localStorage.url;
+    //     fetch(url)
+    //    .then((response) => response.json())
+    //         .then((data) => {
+    //             document.getElementById("categorias").innerHTML = `pokemon tipo ${data.name}`;
+    //             console.log(data);
+    //             data.pokemon.forEach(element => {
+    //                 tipo.unshift(element);
+    //             });
+    //             console.log(data);
+    //         })
+
+    // }
+</script>
+
+<script>
+    const pokemon = []
+    function mostrarpokemon() {
+        let listpokemon = ""
+            .then(response => {
+                listpokemon += `<div class="card mb-3" style="max-width: 540px;">
+  <div class="row g-0">
+    <div class="col-md-4">
+      <img id="img$(element.pokemon.name)" src="..." class="img-fluid rounded-start" alt="...">
+    </div>
+    <div class="col-md-8">
+      <div class="card-body">
+        <h5 class="card-title">Card title</h5>
+        <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+        <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+      </div>
+    </div>
+  </div>
+</div>`
+
+            })
+
+    }
+
+</script>
+
+
+
+<script>
+    // esto es para traer la informacion de cada pokemon
+
+    // function infopokemon(urlPokemon) { }
+    // fetch(urlPokemon.pokemon.url)
+    //     .then((response) => response.json())
+    //     .then(data => {
+    //         console.log(data)
+
+
+    //     })
+</script> -->
+
+</html>

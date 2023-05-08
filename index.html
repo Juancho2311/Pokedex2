@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <script src="js/bootstrap.js"></script>
+    <link rel="stylesheet" href="css/all.min.css">
+    <script src="/js/all.min.js"></script>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body class="" onload=" slideCatPokemon(), loadallpokemon() ">
+    <header>
+        <div class="logo"  >
+            <img src="img/Pokémon-Logo-PNG.png" alt="">
+        </div>
+    </header>
+
+    <div class="col-12">
+        <div class="container my-3 mt-5" id="featureContainer">
+            <div class="carousel slide" data-bs-ride="carousel" id="featureCarousel" >
+                <div class="carousel-inner" id="carousel-cat" role="listbox" style="color: black; height: auto;">
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+</body>
+
+<script>
+
+    const categorias = []
+
+    // Traer pokemones desde la api
+    function getTypePokemon() {
+        return new Promise((resolve) => {
+            fetch("https://pokeapi.co/api/v2/type")
+                .then((response) => response.json())
+                .then((data) => {
+                    console.log(data.results);
+                    data.results.forEach((element) => {
+                        categorias.push(element);
+                    });
+                    resolve("categorias ok");
+                });
+        });
+    }
+
+    // categorias en el carosusel
+    function slideCatPokemon() {
+        getTypePokemon().then((response) => {
+            let categoria;
+            categorias.forEach((element, index) => {
+                if (index == 0) {
+                    categoria += `<div class="carousel-item active">
+                <div class="col-md-2" >
+                  <div class="card rounded ">
+                    <div class="card-img">
+                      <a onclick="localUrlPokemon('${element.url}')" href="typespokemon.html">
+                        <img src="/img/Pokebola-pokeball-png-0.png"class="img-fluid"/>
+                      </a>
+                    </div>
+                    <div class="card-img-overlays text-uppercase text-bg-warning text-black">${element.name}</div>
+                  </div>
+                </div>
+              </div>`;
+
+                } else {
+                    categoria += `<div class="carousel-item">
+                <div class="col-md-2">
+                  <div class="card rounded ">
+                    <div class="card-img" style="display: flex; justify-content: center;" >
+                      <a onclick="localUrlPokemon('${element.url}')" href="typespokemon.html">
+                        <img src="/img/Pokebola-pokeball-png-0.png"class="img-fluid"/>
+                      </a>
+                    </div>
+                    <div class="card-img-overlays text-uppercase text-bg-warning text-black">${element.name}</div>
+                  </div>
+                </div>
+              </div>`;
+                }
+            });
+
+            document.getElementById("carousel-cat").innerHTML = categoria;
+            flipCarousel();
+        });
+    }
+    function localUrlPokemon(urlType) {
+        localStorage.setItem("url", urlType);
+    }
+
+
+    // Consumo de pokemones generales desde la api
+
+    var pokemones = {}
+
+    function loadallpokemon() {
+        fetch("https://pokeapi.co/api/v2/pokemon?limit=100000&offset=0")
+            .then((response) => response.json())
+            .then(data => {
+                console.log(data);
+                pokemones = Object.values(data.results)
+            })
+    }
+
+</script>
+
+<script>
+    function flipCarousel() {
+        let myCarousel = document.querySelectorAll("#featureContainer .carousel .carousel-item");
+        myCarousel.forEach((el) => {
+            const minPerSlide = 4;
+            let next = el.nextElementSibling;
+            for (var i = 1; i < minPerSlide; i++) {
+                if (!next) {
+                    // wrap carousel by using first child
+                    next = myCarousel[0];
+                }
+                let cloneChild = next.cloneNode(true);
+                el.appendChild(cloneChild.children[0]);
+                next = next.nextElementSibling;
+            }
+        });
+    }
+</script>
+
+</html>
